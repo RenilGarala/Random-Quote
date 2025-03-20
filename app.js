@@ -1,22 +1,24 @@
 async function getQuote() {
-  let quateData = await fetch("https://api.freeapi.app/api/v1/public/quotes/quote/random")
-  .then((res) => {
-    return res.json();
-  })
-  .catch((error)=>{
-    alert("Error in fetching quote:");
-  });
+  let quateData = await fetch(
+    "https://api.freeapi.app/api/v1/public/quotes/quote/random"
+  )
+    .then((res) => {
+      return res.json();
+    })
+    .catch((error) => {
+      alert("Error in fetching quote:");
+    });
   setQuote(quateData);
 }
 
-function setQuote(quateData){
-    const quote = document.querySelector(".quote");
+function setQuote(quateData) {
+  const quote = document.querySelector(".quote");
 
-    const content = quateData.data.content;
-    const tags = "#"+quateData.data.tags[0];
-    const authorName = "- " + quateData.data.author.toString().toLowerCase();
+  const content = quateData.data.content;
+  const tags = "#" + quateData.data.tags[0];
+  const authorName = "- " + quateData.data.author.toString().toLowerCase();
 
-    quote.innerHTML = `
+  quote.innerHTML = `
         <div class="quote-content" id="content">
         <img width="28" height="28" src="./images/open-quote.png" alt="quote-right"/>
             ${content}
@@ -31,6 +33,9 @@ function setQuote(quateData){
               <div class="quate-tags" id="tags">
                 ${tags}
               </div>
+              <div class="quate-copy">
+                Copy
+              </div>
             </div>
             <div class="quote-author" id="author">
             ${authorName}
@@ -38,16 +43,31 @@ function setQuote(quateData){
         </div>
     `;
 
-
   const tweet = document.querySelector(".tweet");
-    tweet.addEventListener("click", function() {
-      window.open("https://twitter.com/intent/tweet?text=" + content +"");      
-    });
+  tweet.addEventListener("click", function () {
+    window.open("https://twitter.com/intent/tweet?text=" + content + "");
+  });
+
+  const copyBtn = document.querySelector(".quate-copy");
+  console.log(copyBtn);
+
+  copyBtn.addEventListener("click", () => {
+    const quoteToCopy = `${content} ${authorName}`;
+
+    navigator.clipboard
+      .writeText(quoteToCopy)
+      .then(() => {
+        alert("Quote copied to clipboard!");
+      })
+      .catch((err) => {
+        console.log("Copy failed : ", err);
+      });
+  });
 }
 
 const addBtn = document.querySelector(".add-btn");
-addBtn.addEventListener("click",()=>{
-    getQuote();
-})
+addBtn.addEventListener("click", () => {
+  getQuote();
+});
 
 getQuote();
